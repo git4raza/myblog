@@ -1,12 +1,11 @@
 package com.myblog3.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name="posts")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +16,5 @@ public class Post {
     private String title;
     private String description;
     private String content;
-    
+
 }
