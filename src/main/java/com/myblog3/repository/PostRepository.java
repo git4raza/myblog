@@ -1,4 +1,4 @@
-package com.myblog3;
+package com.myblog3.repository;
 
 
 import com.myblog3.entity.Post;

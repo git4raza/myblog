@@ -1,5 +1,4 @@
 package com.myblog3.payload;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,4 @@ public class PostDto {
     private String description;
     private String content;
     private String message;
-
-
 }
