@@ -3,6 +3,7 @@ import com.myblog3.payload.PostDto;
 import com.myblog3.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class PostController{
     }
 
 //http://localhost:8080/api/post
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
 public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
     PostDto postD = postService.createPost(postDto);
@@ -47,16 +49,28 @@ public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
     }
     //http://localhost:8080/api/post/5
     @DeleteMapping("/{id}")
-    public ResponseEntity<String>deletePost(@PathVariable long id){
+    public ResponseEntity<String>deletePostt(@PathVariable Long id){
         postService.deletePost(id);
-        return new ResponseEntity<>("Post is deleted",HttpStatus.OK);
+        return new ResponseEntity<>("Post is deleted successfully",HttpStatus.OK);
     }
     @PutMapping("/{id}")
     public ResponseEntity<PostDto>updatePost(@PathVariable long id,@RequestBody PostDto postDto){
 
     PostDto dto=postService.updatePost(id,postDto);
+
+
+
+    dto.setMessage("Post has been updated with id:-"+id);
    return new ResponseEntity<>(dto,HttpStatus.OK);
 
 
     }
+    @GetMapping("/sts")
+    public ResponseEntity<List<PostDto>>getpostbyRaza(@RequestParam String raza){
+        List<PostDto> postDtos = postService.getpostbyRaza(raza);
+        return new ResponseEntity<>(postDtos,HttpStatus.OK);
+    }
+
 }
+
+

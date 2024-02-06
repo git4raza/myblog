@@ -57,14 +57,12 @@
 //            okg.setDescription(post.getDescription());
 //            okg.setContent(post.getContent());
             return dto;
-
-
         }
 
 
         @Override
         public List<PostDto> getAllPosts(int pageNo, int pageSize) {
-                Pageable pageAble = PageRequest.of(pageNo, pageSize);
+            Pageable pageAble =  PageRequest.of(pageNo, pageSize);
             Page<Post> pagePost = postRepository.findAll(pageAble);
             List<Post> postss = pagePost.getContent();
             List<PostDto> dtos = postss.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
@@ -82,17 +80,28 @@
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Post not found with id:" + id)
             );
-            Post posts = mapToEntity(postDto);
 
+            Post posts = mapToEntity(postDto);
             posts.setId(post.getId());
+
             Post post1 = postRepository.save(posts);
             PostDto postDto1 = mapToDto(post1);
             System.out.println(postDto1);
             return postDto1;
-
-
         }
 
+        @Override
+        public void deletePostt(long id) {
+            postRepository.deleteById(id);
+        }
+
+        @Override
+
+        public List<PostDto> getpostbyRaza(String raza) {
+            List<Post> byRaza = postRepository.findByDescription(raza);
+            List<PostDto> collect = byRaza.stream().map(sts -> mapToDto(sts)).collect(Collectors.toList());
+            return collect;
+        }
 
         PostDto mapToDto(Post post) {
             PostDto dto = mapper.map(post, PostDto.class);

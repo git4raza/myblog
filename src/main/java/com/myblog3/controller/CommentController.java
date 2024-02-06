@@ -2,6 +2,7 @@
 package com.myblog3.controller;
 
 import com.myblog3.entity.Comment;
+import com.myblog3.entity.Post;
 import com.myblog3.payload.CommentDto;
 import com.myblog3.service.CommentService;
 import org.springframework.http.HttpStatus;
@@ -41,13 +42,27 @@ commentService.deleteComment(id);
 
 return new ResponseEntity<>("Comment is deleted",HttpStatus.OK);
     }
-    @GetMapping()
-    public ResponseEntity <List<CommentDto>>getALltheCMT(){
-        List<CommentDto> dtoos = commentService.getAllcmt();
+    //http://localhost:8080/api/comments/all
+    @GetMapping("/all")
+    public ResponseEntity <List<CommentDto>>getALltheCMT(@RequestParam(name="pageNo",required = false,defaultValue = "0")int pageNo,
+                                                         @RequestParam(name="pageSize",required = false,defaultValue = "3")int pageSize
+    ){
+
+        List<CommentDto> dtoos = commentService.getAllcmt(pageNo, pageSize);
         return new ResponseEntity<>(dtoos,HttpStatus.OK);
     }
 
+@GetMapping("/particular")
+    public ResponseEntity<List<CommentDto>>getAllCommentforPost(@RequestParam("id") long postid){
+        List<CommentDto> allcmt = commentService.getAllCommentforPost(postid);
+       return new ResponseEntity<>(allcmt,HttpStatus.OK);
 
+    }
+    @GetMapping("/{email}")
+    public ResponseEntity<List<CommentDto>>getAllCmtByEmail(@PathVariable String email){
+        List<CommentDto> allCmtByEmail = commentService.getAllCmtByEmail(email);
+return new ResponseEntity<>(allCmtByEmail,HttpStatus.OK);
+    }
 }
 
 

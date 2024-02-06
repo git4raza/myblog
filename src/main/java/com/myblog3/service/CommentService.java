@@ -15,5 +15,9 @@ public interface CommentService{
 
     CommentDto updateComment(long id, CommentDto commentDto,long postId);
 
-   List <CommentDto> getAllcmt();
+   List <CommentDto> getAllcmt(int pageNo,int pageSize);
+
+    List<CommentDto> getAllCommentforPost(long id);
+
+    List<CommentDto> getAllCmtByEmail(String email);
 }

@@ -15,4 +15,8 @@ public interface PostService {
     void deletePost(long id);
 
     PostDto updatePost(long raza, PostDto postDto);
+
+    void deletePostt(long id);
+
+    List<PostDto> getpostbyRaza(String raza);
 }

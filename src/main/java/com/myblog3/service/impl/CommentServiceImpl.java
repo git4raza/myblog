@@ -4,22 +4,23 @@ import com.myblog3.entity.Comment;
 import com.myblog3.entity.Post;
 import com.myblog3.exception.ResourceNotFoundException;
 import com.myblog3.payload.CommentDto;
-import com.myblog3.payload.PostDto;
 import com.myblog3.repository.PostRepository;
 import com.myblog3.repository.CommentRepository;
 import com.myblog3.service.CommentService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
 public class CommentServiceImpl implements CommentService {
     private PostRepository postRepository;
-
+    private CommentRepository commentRepository;
     private ModelMapper mapper;
 
 
@@ -30,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
         this.mapper=mapper;
     }
 
-    private CommentRepository commentRepository;
+
 
     @Override
     public CommentDto createComment(CommentDto commentDto, long postId) {
@@ -54,9 +55,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
 
-    }
+            if (!commentRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Comment not found with Id:"+id);
+            }
+
+            commentRepository.deleteById(id);
+        }
 
     @Override
     public CommentDto updateComment(long id, CommentDto commentDto,long postId) {
@@ -76,11 +81,33 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
+
+
     @Override
-    public List<CommentDto> getAllcmt() {
-        List<Comment> comments = commentRepository.findAll();
+    public List<CommentDto> getAllcmt(int pageNo,int pageSize) {
+PageRequest pageable =PageRequest.of(pageNo, pageSize);
+        Page<Comment> comments = commentRepository.findAll(pageable);
         List<CommentDto> dtos = comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
         return dtos;
+    }
+
+    @Override
+    public List<CommentDto> getAllCommentforPost(long raza) {
+
+        List<Comment> comments = commentRepository.findByPostId(raza).orElseThrow(
+                () -> new ResourceNotFoundException("Comments not found with the particular Post"+raza)
+        );
+        List<CommentDto> collect = comments.stream().map(dtolist -> mapToDto(dtolist)).collect(Collectors.toList());
+        System.out.println(collect);
+        return collect;
+    }
+
+    @Override
+    public List<CommentDto> getAllCmtByEmail(String email) {
+
+        List<Comment> byEmail = commentRepository.findByEmail(email);
+        List<CommentDto> collect = byEmail.stream().map(sts -> mapToDto(sts)).collect(Collectors.toList());
+        return collect;
     }
 
     Comment maptoEntity(CommentDto dto){
